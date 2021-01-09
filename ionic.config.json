@@ -1,0 +1,7 @@
+{
+  "name": "triominos-score",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
