@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="games" (click)="save()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Triominos game</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-list>
+      <ion-item *ngFor="let player of game.playersBag.players()"
+                [color]="game.playersBag.current() === player ? 'primary' : ''">
+        <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          {{player.getName()}}
+          <div *ngIf="game.isStarted()">
+            <strong>Tiles:</strong>
+            {{player.getTiles()}}
+          </div>
+        </ion-label>
+        <ion-text *ngIf="game.isStarted()" slot="end">
+          {{player.getScore()}} points
+        </ion-text>
+
+        <ion-button *ngIf="!game.isStarted()" (click)="game.playersBag.delete(player)"
+                    color="danger" fill="clear" slot="end">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card *ngIf="!game.isStarted()">
+    <ion-card-content>
+      <div class="ion-text-center">
+        <span *ngIf="!game.canStart(); else canStart">To start a game add from 2 to 4 players</span>
+      </div>
+      <ng-template #canStart>Add more players or start the game</ng-template>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button color="success" expand="block" (click)="addPlayer()">
+              <ion-icon name="person-add"></ion-icon>
+              <span style="margin-left: .25rem">Add player</span>
+            </ion-button>
+          </ion-col>
+          <ion-col *ngIf="game.canStart()">
+            <ion-button color="secondary" expand="block" (click)="game.start()">
+              <ion-icon name="play"></ion-icon>
+              <span style="margin-left: .25rem">Start game</span>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="game.isStarted()">
+    <ion-card-header>
+      Game process
+    </ion-card-header>
+    <ion-list>
+      <ion-item>
+        <ion-label position="fixed">Picked tiles</ion-label>
+        <ion-range color="warning" [(ngModel)]="tilesPicked" min="0" max="3" snaps="true"></ion-range>
+        <ion-note color="warning" slot="end">{{tilesPicked | number}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Is Tile placed</ion-label>
+        <ion-toggle [(ngModel)]="isTilesPlaced" color="success"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="isTilesPlaced">
+        <ion-label position="fixed">Tiles score</ion-label>
+        <ion-range color="success" [(ngModel)]="tilesScore" min="0" max="15" snaps="true"></ion-range>
+        <ion-note color="success" slot="end">{{tilesScore | number}}</ion-note>
+      </ion-item>
+      <ion-item *ngIf="isTilesPlaced">
+        <ion-label>Bonus</ion-label>
+        <ion-select [(ngModel)]="bonus">
+          <ion-select-option *ngFor="let item of bonusList" [value]="item.value">
+            {{item.label}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-card-content style="text-align: right">
+      <ion-button color="secondary" (click)="nextPlayer()">
+        <span style="margin-right: .25rem">Next player</span>
+        <ion-icon name="play"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

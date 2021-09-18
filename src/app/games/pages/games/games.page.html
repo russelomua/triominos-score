@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Triominos Games</ion-title>
+    <ion-buttons collapse="true" slot="end">
+      <ion-button [routerLink]="['new']">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Games list</ion-label>
+    </ion-list-header>
+    <ion-item-sliding *ngFor="let state of gameService.states; let index = index">
+      <ion-item [routerLink]="[state.uuid]" detail>
+        <ion-icon *ngIf="!state.dateStart" name="cog-outline" color="primary" slot="start"></ion-icon>
+        <ion-icon *ngIf="state.dateStart" name="trophy" color="warning" slot="start"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <div *ngIf="state.players.length; else noPlayers">
+            <ion-chip *ngFor="let player of state.players"
+                      color="secondary" [outline]="true">{{player.name}}</ion-chip>
+          </div>
+          <ng-template #noPlayers>
+            <ion-chip color="danger" [outline]="true">Players missing</ion-chip>
+          </ng-template>
+        </ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteGame(index)">
+          Delete
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
